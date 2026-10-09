@@ -1,0 +1,134 @@
+/* ============================================================================
+   THEME GALLERY
+   Deliberately theme-independent: the switcher must stay legible and on-brand
+   no matter which theme is currently rendering the menu underneath it. If these
+   rules used var(--accent) from the active theme, MINIMA's gallery would go
+   white-on-white.
+   ========================================================================== */
+
+.gallery-backdrop {
+  background: color-mix(in oklab, #06060a 88%, transparent);
+  backdrop-filter: blur(20px) saturate(120%);
+}
+
+.gallery-panel {
+  background: linear-gradient(180deg, #0f0c11 0%, #08070a 100%);
+}
+
+.gallery-card {
+  background: color-mix(in oklab, #f8f3ea 4%, transparent);
+  border: 1px solid color-mix(in oklab, #f8f3ea 10%, transparent);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.gallery-card:hover {
+  border-color: color-mix(in oklab, #e2c78e 34%, transparent);
+  background: color-mix(in oklab, #f8f3ea 7%, transparent);
+}
+
+.gallery-card[aria-pressed='true'] {
+  border-color: color-mix(in oklab, #d3a85f 62%, transparent);
+}
+
+.gallery-trigger {
+  background: color-mix(in oklab, #100d0a 88%, transparent);
+  backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid color-mix(in oklab, #f8f3ea 16%, transparent);
+  box-shadow: 0 14px 36px -20px rgb(0 0 0 / 0.95);
+}
+
+@keyframes gallery-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Exit: the panel steps back the way it came, and slightly further, so the
+   dismissal reads as deliberate rather than cut off. */
+@keyframes gallery-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0) scale(0.985);
+  }
+}
+
+@keyframes gallery-item {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes gallery-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* A single slow sweep across the miniature, to read as "live". */
+@keyframes gallery-sheen {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(240%);
+  }
+}
+
+.gallery-panel {
+  animation: gallery-in var(--motion-slow) var(--motion-ease-decelerate) both;
+}
+
+.gallery-item {
+  animation: gallery-item var(--motion-slow) var(--motion-ease-decelerate) both;
+}
+
+[data-state='closing'] .gallery-panel {
+  animation: gallery-out var(--motion-normal) var(--motion-ease-accelerate) both;
+}
+
+[data-state='closing'] .gallery-backdrop {
+  animation: gallery-backdrop-out var(--motion-fast) var(--motion-ease-accelerate) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-swatch::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 28%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.18), transparent);
+    animation: gallery-sheen 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+}
+
+/* Under reduced motion the panel still fades in and out — the state change stays
+   visible — it just stops travelling. Only the looping sheen is removed
+   outright, because a loop has no state to communicate. */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-panel,
+  .gallery-item,
+  [data-state='closing'] .gallery-backdrop {
+    animation-duration: var(--motion-normal);
+    animation-timing-function: linear;
+  }
+}

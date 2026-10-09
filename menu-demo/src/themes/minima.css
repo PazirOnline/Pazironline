@@ -1,0 +1,283 @@
+/* ============================================================================
+   MINIMA — Theme 03. Modern / Minimal / Architectural.
+   The restraint is the point. Light ground, near-zero radius, hairline rules,
+   one accent, and motion measured in opacity and 4px of translation. Every
+   decision here is the opposite of MUSE's.
+   ========================================================================== */
+
+[data-theme='minima'] {
+  color-scheme: light;
+
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --surface-2: #eceae4;
+  --surface-glass: #ffffff;
+
+  --text: #16150f;
+  --text-dim: #6b6862;
+  --text-mute: #96938c;
+  --on-accent: #ffffff;
+
+  --accent: #1a1813;
+  --accent-soft: #16150f;
+  --accent-deep: #1a1813;
+
+  --line: rgb(22 21 15 / 0.1);
+  --line-strong: rgb(22 21 15 / 0.24);
+
+  --danger: #a33a2c;
+
+  /* MINIMA has almost no radius language: 0 for structure, 2px for controls. */
+  --radius: 0.125rem;
+  --radius-lg: 0.125rem;
+  --radius-pill: 0.125rem;
+
+  /* No diffuse drop shadows — separation is done with rules and space. */
+  --shadow-lift: none;
+
+  --font-body: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+
+  /* Precise and fast. Nothing overshoots. */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
+  --theme-transition: 200ms;
+
+  --grain-opacity: 0;
+  --hero-photo-opacity: 0.16;
+  --focus: #1a1813;
+
+  /* Precise and architectural: no overshoot anywhere, near-zero travel. */
+  --motion-rise: 4px;
+  --motion-slide: 0px;
+  --motion-sheet: 6px;
+  --count-in: 1;
+  --count-lift: 1;
+  --motion-press: 0.99;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --motion-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ── Atmosphere: nothing. A flat warm ground. ─────────────────────────── */
+
+@keyframes minima-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes minima-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Sheets arrive as a fade plus a 6px lift. No scale, no bounce. */
+@keyframes minima-sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-sheet), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes minima-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Images scale a few percent on press. Precise, not showy. */
+@keyframes minima-zoom {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ── Structure ────────────────────────────────────────────────────────── */
+
+[data-theme='minima'] .minima-hairline {
+  height: 1px;
+  background: var(--line);
+}
+
+/* Section headings get an animated rule that draws itself once on entry. */
+[data-theme='minima'] .minima-rule {
+  height: 1px;
+  background: var(--line-strong);
+  transform-origin: left;
+  animation: minima-rule 0.6s var(--ease) both;
+}
+
+[data-theme='minima'] .minima-photo {
+  /* Clean and true: MINIMA does not tint or warm its photography. */
+  transition: transform 0.5s var(--ease);
+}
+
+/* MINIMA needs no scrim — type never sits on a photograph. */
+[data-theme='minima'] .minima-bar {
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+[data-theme='minima'] .minima-glass {
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+[data-theme='minima'] .minima-cta {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ── Motion surface ───────────────────────────────────────────────────── */
+
+[data-theme='minima'] .minima-enter {
+  animation: minima-enter 0.36s var(--ease) both;
+}
+
+[data-theme='minima'] .minima-fade {
+  animation: minima-fade 0.24s var(--ease) both;
+}
+
+[data-theme='minima'] .minima-sheet {
+  animation: minima-sheet-in 0.24s var(--ease) both;
+}
+
+[data-theme='minima'] .minima-zoom {
+  animation: minima-zoom 0.7s var(--ease) both;
+}
+
+/* ── Interaction states ───────────────────────────────────────────────── */
+
+[data-theme='minima'] .minima-chip[data-selected='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+[data-theme='minima'] .minima-chip[data-selected='false'] {
+  color: var(--text-dim);
+  transition:
+    color 0.15s var(--ease),
+    background-color 0.15s var(--ease);
+}
+
+[data-theme='minima'] .minima-chip[data-selected='false']:hover {
+  color: var(--text);
+  background: color-mix(in oklab, var(--text) 4%, transparent);
+}
+
+[data-theme='minima'] .minima-add {
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  transition:
+    background-color 0.15s var(--ease),
+    color 0.15s var(--ease);
+}
+
+[data-theme='minima'] .minima-step {
+  transition: background-color 0.15s var(--ease);
+}
+
+[data-theme='minima'] .minima-step:active {
+  background: color-mix(in oklab, var(--text) 8%, transparent);
+}
+
+[data-theme='minima'] .minima-remove {
+  color: var(--text-mute);
+  transition: color 0.15s var(--ease);
+}
+
+[data-theme='minima'] .minima-remove:hover {
+  color: var(--danger);
+}
+
+[data-theme='minima'] .minima-choice {
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  transition:
+    border-color 0.15s var(--ease),
+    color 0.15s var(--ease),
+    background-color 0.15s var(--ease);
+}
+
+[data-theme='minima'] .minima-choice[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+[data-theme='minima'] .minima-sold-out {
+  border: 1px solid color-mix(in oklab, var(--danger) 35%, transparent);
+  color: var(--danger);
+}
+
+/* ── Typography ───────────────────────────────────────────────────────── */
+
+/* MINIMA sets Latin display type as a tracked-out monospace-ish label rather
+   than a serif — the point is that it reads as data, not decoration. */
+[data-theme='minima'] .minima-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ── Leave ─────────────────────────────────────────────────────────── */
+/* Minimal travel, and the fastest departure in the set. Nothing performs. */
+@keyframes minima-sheet-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translate3d(0, var(--motion-sheet), 0); }
+}
+@keyframes minima-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+[data-theme='minima'] [data-state='closing'] .minima-sheet {
+  animation: minima-sheet-out calc(var(--motion-fast) * 0.8) var(--motion-ease-accelerate) both;
+}
+[data-theme='minima'] [data-state='closing'] .minima-fade {
+  animation: minima-fade-out calc(var(--motion-fast) * 0.7) var(--motion-ease-accelerate) both;
+}
+
+/* ── Cart line removal ──────────────────────────────────────────────── */
+/* MINIMA removes without ceremony: a short fade on the table row. No travel,
+   no collapse — a row in a grid should not perform. */
+@keyframes minima-line-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+[data-theme='minima'] tr[data-removing='true'] {
+  animation: minima-line-out calc(var(--motion-fast) * 0.7) var(--motion-ease-accelerate) both;
+  pointer-events: none;
+}
+
+/* ── Cart count confirmation ────────────────────────────────────────── */
+/* MINIMA reports without performing: opacity only, no lift, no overshoot. */
+@keyframes minima-count-pop {
+  from { opacity: 0; scale: var(--count-in); }
+  to { opacity: 1; scale: 1; }
+}
+[data-theme='minima'] .cart-count {
+  animation: minima-count-pop var(--motion-normal) var(--motion-ease-decelerate) both;
+}

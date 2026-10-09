@@ -1,0 +1,303 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   FONTS — self-hosted, preloaded in index.html. Persian is the primary design
+   material, not a fallback (design-system.md §4.1).
+   ========================================================================== */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/vazirmatn-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-300.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* ============================================================================
+   BASE — theme-agnostic. Nothing here may reference a specific theme.
+   ========================================================================== */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ==========================================================================
+     MOTION — the shared foundation.
+
+     Durations form an honest ladder. Anything slower than --motion-slow is
+     reserved for a first-paint entrance; anything faster than --motion-instant
+     stops reading as instant feedback on a touchscreen.
+
+       --motion-instant  press feedback, must feel same-frame as the touch
+       --motion-fast     hover, colour and border state flips
+       --motion-normal   sheets, chips, card states
+       --motion-slow     larger surfaces, theme switch
+       --motion-hero     entrance choreography only
+
+     Themes override the character (--motion-ease*) but not the ladder, so a
+     PULSE press still reads as instant and a VERDE entrance still reads as
+     unhurried. Only transform and opacity are animated anywhere in this project;
+     layout properties are never transitioned (see motion.md §2).
+     ========================================================================== */
+  :root {
+    --motion-instant: 90ms;
+    --motion-fast: 170ms;
+    --motion-normal: 280ms;
+    --motion-slow: 440ms;
+    --motion-hero: 760ms;
+
+    /* Standard: the default. Decelerate for entrances, accelerate for exits —
+       movement should start fast and settle, never the reverse. */
+    --motion-ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+    --motion-ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --motion-ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+    /* Emphasized carries a small overshoot for direct manipulation only. */
+    --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1.28);
+
+    /* Distance unit used by every entrance, so reduced motion can flatten all
+       of them to zero in one place instead of editing each keyframe. */
+    --motion-rise: 16px;
+    --motion-slide: 0px;
+    /* How far a sheet travels as it enters. Themes override; a percentage is
+       valid here, which lets PULSE and NOIRÉ slide in by their own height. */
+    --motion-sheet: 40px;
+    --motion-press: 0.97;
+
+    /* Cart count confirmation. Split into two stops so each theme can overshoot
+       differently; reduced motion sets both to 1, which leaves a plain fade and
+       no scaling at all. */
+    --count-in: 0.72;
+    --count-lift: 1.06;
+
+    /* Depth scale applied as an element arrives. 1 means "no scaling", which is
+       what reduced motion needs; MUSE is the only theme that lowers it, and it
+       is what gives that theme its sense of depth. */
+    --enter-scale: 1;
+    --enter-scale-soft: 1;
+  }
+
+  /*
+    Reduced motion.
+
+    Deliberately NOT `* { transition-duration: 0.01ms }`. That blunt version also
+    removes the opacity crossfades that communicate a state change — a quantity
+    step or a sheet opening would snap with no signal at all, which is more
+    confusing than motion, not less.
+
+    Instead: keep short fades so state stays legible, collapse displacement to
+    zero, and collapse the ladder so nothing takes longer than a blink. Looping
+    ambient animation is switched off per theme inside
+    `@media (prefers-reduced-motion: no-preference)`, which is the only way to
+    guarantee it stops.
+
+    The selector is `:root[data-theme]`, not `:root`. Each theme sets its own
+    `--motion-rise` / `--motion-sheet` / `--count-in` on `[data-theme='x']`,
+    which has the *same* specificity as `:root` — so at equal weight the theme
+    sheet simply wins on source order and reduced motion silently does nothing.
+    Qualifying with the attribute raises this to 0,2,0 and puts the override
+    back on top.
+  */
+
+  body {
+    margin: 0;
+    font-family: var(--font-body, 'Vazirmatn');
+    /* Persian glyphs need more vertical room than Latin (design-system §4.2). */
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    background-color: var(--bg);
+    color: var(--text);
+    transition:
+      background-color var(--theme-transition, 400ms) var(--ease, ease),
+      color var(--theme-transition, 400ms) var(--ease, ease);
+  }
+
+  /* Tabular digits so prices and totals align in lists and totals */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  /* Latins inside RTL must not be reordered into nonsense (C3) */
+  .latin {
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus, currentColor);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION
+
+   Deliberately NOT `* { transition-duration: 0.01ms }`. That blunt version also
+   removes the opacity crossfades that communicate a state change — a quantity
+   step or a sheet opening would snap with no signal at all, which is more
+   confusing than motion, not less.
+
+   Instead: keep short fades so state stays legible, collapse displacement to
+   zero, and collapse the ladder so nothing takes longer than a blink. Looping
+   ambient animation is switched off per theme inside
+   `@media (prefers-reduced-motion: no-preference)`, which is the only way to
+   guarantee it stops.
+
+   Two details are load-bearing:
+
+   1. This block is deliberately OUTSIDE `@layer base`. Tailwind's layers lose
+      to unlayered rules, and the theme stylesheets are unlayered — an override
+      left inside a layer would never beat `[data-theme='x']` and reduced motion
+      would silently do nothing at all.
+   2. The selector is `:root[data-theme]`, not `:root`. `:root` and
+      `[data-theme='x']` have identical specificity (0,1,0), so the theme would
+      win on source order. Qualifying with the attribute makes this 0,2,0.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  :root[data-theme] {
+    --motion-instant: 1ms;
+    --motion-fast: 120ms;
+    --motion-normal: 140ms;
+    --motion-slow: 140ms;
+    --motion-hero: 160ms;
+
+    /* No travel. Opacity still changes, so the transition is a fade only. */
+    --motion-rise: 0px;
+    --motion-slide: 0px;
+    --motion-sheet: 0px;
+    --motion-press: 1;
+
+    /* Confirmation still has to be visible, so it stays — but as a fade with
+       the number simply appearing, which is unmistakable and motionless. */
+    --count-in: 1;
+    --count-lift: 1;
+
+    /* Scaling is displacement too. Both drop to 1 so the arrival is a fade. */
+    --enter-scale: 1;
+    --enter-scale-soft: 1;
+  }
+}
+
+/* ============================================================================
+   UTILITIES — behaviour, not identity. Themes supply the values.
+   ========================================================================== */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Horizontal category rail: thumb-friendly, RTL-native */
+@utility rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+@utility safe-b {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/**
+ * Tactile press feedback — the one interaction primitive every theme shares.
+ *
+ * Usage: `press-[0.98]`, `press-0.9`. Replaces the ad-hoc
+ * `transition-transform active:scale-*` pairs that had drifted across themes
+ * with different timings, so a press now always lands on --motion-instant.
+ *
+ * Deliberately *not* a spring. A press must acknowledge the finger inside the
+ * frame it lands; an overshooting curve makes a tap read as late. Overshoot
+ * belongs to the release, and lives in --motion-ease-emphasized instead.
+ *
+ * Under reduced motion the scale is dropped and a small opacity dip carries the
+ * same "I touched that" information without any movement.
+ */
+@utility press-* {
+  --_press: --value([number]);
+
+  transition-property: transform, opacity;
+  transition-duration: var(--motion-instant);
+  transition-timing-function: var(--motion-ease-standard);
+
+  &:active {
+    scale: var(--_press);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:active {
+      scale: 1;
+      opacity: 0.72;
+    }
+  }
+}
+
+/**
+ * Hover lift for surfaces, gated so touch devices never rely on it.
+ * `:hover` sticks after a tap on iOS, which is why the hover frame and the
+ * pressed state are deliberately different things.
+ */
+@utility lift {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    transition:
+      transform var(--motion-normal) var(--motion-ease-standard),
+      box-shadow var(--motion-normal) var(--motion-ease-standard);
+
+    &:hover {
+      transform: translate3d(0, -2px, 0);
+    }
+  }
+}
+
+@utility safe-t {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+/**
+ * Typographic fall-back card for a photograph that failed to load.
+ * design-system.md §8.2 forbids a broken image icon.
+ */
+@utility media-fallback {
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--font-display, inherit);
+}

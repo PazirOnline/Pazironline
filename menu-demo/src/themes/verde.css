@@ -1,0 +1,403 @@
+/* ============================================================================
+   VERDE — Theme 04. Organic / Natural / Cozy.
+   Warm ground rather than white, sage and clay accents, soft corners that are
+   never perfectly round, and a botanical hairline motif. Motion is soft reveal
+   and slow easing — closer to growth than to spring.
+   ========================================================================== */
+
+[data-theme='verde'] {
+  color-scheme: light;
+
+  --bg: #f4f0e6;
+  --surface: #fbf8f1;
+  --surface-2: #e8e2d2;
+  --surface-glass: #fbf8f1;
+
+  --text: #2b3327;
+  --text-dim: #6d7566;
+  --text-mute: #9aa08f;
+  --on-accent: #f7f5ee;
+
+  --accent: #6b8f5e;
+  --accent-soft: #8fae80;
+  --accent-deep: #4f6f45;
+  --accent-alt: #c2804f;
+
+  --line: rgb(43 51 39 / 0.12);
+  --line-strong: rgb(43 51 39 / 0.26);
+
+  --danger: #a8563f;
+
+  /* Soft but not bubbly: the corners read as hand-cut, not as plastic pills. */
+  --radius: 1.25rem;
+  --radius-lg: 2rem;
+  --radius-pill: 999px;
+
+  /* Diffuse, warm-tinted elevation — light bouncing off paper. */
+  --shadow-lift:
+    0 22px 48px -26px rgb(58 66 48 / 0.35), 0 2px 6px -3px rgb(58 66 48 / 0.16);
+
+  --font-body: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+
+  /* Organic: gentle ease-out, no bounce, slightly longer settle. */
+  --ease: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --theme-transition: 460ms;
+
+  --grain-opacity: 0.28;
+  --hero-photo-opacity: 0.3;
+  --focus: #4f6f45;
+
+  /* Organic: softer settle, slightly less mechanical than the default. */
+  --count-in: 0.72;
+  --count-lift: 1.08;
+  --motion-rise: 14px;
+  --enter-scale-soft: 0.985;
+  --motion-slide: 0px;
+  --motion-sheet: 40px;
+  --motion-ease-standard: cubic-bezier(0.32, 0.72, 0.28, 1);
+  --motion-ease-decelerate: cubic-bezier(0.15, 0.75, 0.25, 1);
+  --motion-ease-accelerate: cubic-bezier(0.5, 0, 0.75, 0);
+  --motion-ease-emphasized: cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+@keyframes verde-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cards settle with a barely-perceptible scale, like paper uncurling. */
+@keyframes verde-unfurl {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-rise), 0) scale(var(--enter-scale-soft));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes verde-sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-sheet), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes verde-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes verde-sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
+@keyframes verde-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes verde-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ── Atmosphere: warm paper with a faint botanical wash ───────────────── */
+
+[data-theme='verde'] .verde-wash {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(52% 38% at 82% -6%, color-mix(in oklab, var(--accent-soft) 26%, transparent), transparent 68%),
+    radial-gradient(44% 34% at 6% 8%, color-mix(in oklab, var(--accent-alt) 16%, transparent), transparent 70%),
+    radial-gradient(60% 46% at 46% 104%, color-mix(in oklab, var(--accent-deep) 14%, transparent), transparent 70%);
+}
+
+[data-theme='verde'] .verde-grain {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+/* ── Botanical motif ──────────────────────────────────────────────────── */
+
+/* A stem-and-leaf hairline used as a section divider. */
+[data-theme='verde'] .verde-stem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  color: color-mix(in oklab, var(--accent) 60%, transparent);
+}
+
+[data-theme='verde'] .verde-stem::before,
+[data-theme='verde'] .verde-stem::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  max-width: 5rem;
+  background: linear-gradient(to right, transparent, var(--line-strong));
+}
+
+[data-theme='verde'] .verde-stem::after {
+  background: linear-gradient(to left, transparent, var(--line-strong));
+}@media (prefers-reduced-motion: no-preference) {
+
+  [data-theme='verde'] .verde-leaf {
+    display: block;
+    transform-origin: bottom center;
+    animation: verde-sway 7s ease-in-out infinite;
+  }
+}
+
+/* Two small leaves flanking a stem, drawn inline. */
+[data-theme='verde'] .verde-sprig {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+[data-theme='verde'] .verde-sprig span {
+  display: block;
+  width: 5px;
+  height: 11px;
+  border-radius: 0 100% 0 100%;
+  background: color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+[data-theme='verde'] .verde-sprig span:nth-child(2) {
+  height: 16px;
+  background: color-mix(in oklab, var(--accent) 75%, transparent);
+}
+
+[data-theme='verde'] .verde-sprig span:nth-child(3) {
+  height: 8px;
+  background: color-mix(in oklab, var(--accent-alt) 55%, transparent);
+}
+
+/* ── Surfaces ─────────────────────────────────────────────────────────── */
+
+[data-theme='verde'] .noire-glass-1,
+[data-theme='verde'] .verde-glass {
+  background: color-mix(in oklab, var(--surface) 74%, transparent);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid var(--line);
+}
+
+[data-theme='verde'] .verde-bar {
+  background: color-mix(in oklab, var(--bg) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  border-bottom: 1px solid var(--line);
+}
+
+[data-theme='verde'] .verde-sheet-bg {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lift);
+}
+
+[data-theme='verde'] .verde-cta {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--accent) 92%, #fff),
+    var(--accent-deep)
+  );
+  color: var(--on-accent);
+  box-shadow: 0 12px 28px -14px color-mix(in oklab, var(--accent-deep) 70%, transparent);
+}
+
+/* ── Imagery: warm and natural, never darkened ────────────────────────── */
+
+[data-theme='verde'] .verde-photo {
+  filter: saturate(1.02) contrast(0.99) brightness(1.03) sepia(0.05);
+  transition: transform 0.8s var(--ease);
+}
+
+[data-theme='verde'] .verde-scrim {
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    color-mix(in oklab, var(--surface) 55%, transparent) 78%,
+    color-mix(in oklab, var(--surface) 92%, transparent) 100%
+  );
+}
+
+/* ── Motion surface ───────────────────────────────────────────────────── */
+
+[data-theme='verde'] .verde-reveal {
+  animation: verde-reveal 0.72s var(--ease) both;
+}
+
+[data-theme='verde'] .verde-unfurl {
+  animation: verde-unfurl 0.8s var(--ease) both;
+}
+
+[data-theme='verde'] .verde-fade {
+  animation: verde-fade 0.3s ease both;
+}
+
+[data-theme='verde'] .verde-sheet {
+  animation: verde-sheet-in 0.46s var(--ease) both;
+}@media (prefers-reduced-motion: no-preference) {
+
+  [data-theme='verde'] .verde-breathe {
+    animation: verde-breathe var(--breathe, 9s) ease-in-out infinite;
+  }
+}@media (prefers-reduced-motion: no-preference) {
+
+  [data-theme='verde'] .verde-sway {
+    animation: verde-sway 8s ease-in-out infinite;
+  }
+}
+
+[data-theme='verde'] .verde-grow {
+  transform-origin: bottom;
+  animation: verde-grow 0.8s var(--ease) both;
+}
+
+/* ── Interaction states ───────────────────────────────────────────────── */
+
+[data-theme='verde'] .verde-chip[data-selected='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 6px 18px -8px color-mix(in oklab, var(--accent-deep) 70%, transparent);
+}
+
+[data-theme='verde'] .verde-chip[data-selected='false'] {
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  transition:
+    background-color 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+[data-theme='verde'] .verde-chip[data-selected='false']:active {
+  background: var(--surface-2);
+}
+
+[data-theme='verde'] .verde-add {
+  background: color-mix(in oklab, var(--accent) 16%, transparent);
+  color: var(--accent-deep);
+  transition: background-color 0.25s var(--ease);
+}
+
+[data-theme='verde'] .verde-step {
+  transition: background-color 0.2s var(--ease);
+}
+
+[data-theme='verde'] .verde-step:active {
+  background: color-mix(in oklab, var(--text) 8%, transparent);
+}
+
+[data-theme='verde'] .verde-remove {
+  color: var(--text-mute);
+  transition: color 0.2s var(--ease);
+}
+
+[data-theme='verde'] .verde-remove:hover {
+  color: var(--danger);
+}
+
+[data-theme='verde'] .verde-choice {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-dim);
+  transition:
+    background-color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+[data-theme='verde'] .verde-choice[aria-pressed='true'] {
+  background: color-mix(in oklab, var(--accent) 14%, var(--surface));
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+[data-theme='verde'] .verde-sold-out {
+  border: 1px solid color-mix(in oklab, var(--danger) 40%, transparent);
+  background: color-mix(in oklab, var(--danger) 8%, transparent);
+  color: var(--danger);
+}
+
+/* Corner asymmetry: one corner tucked, the rest soft. Signature of the theme. */
+[data-theme='verde'] .verde-cut {
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0.5rem;
+}
+
+/* ── Leave ─────────────────────────────────────────────────────────── */
+/* Sinks softly, as if settling back into the page. */
+@keyframes verde-sheet-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translate3d(0, var(--motion-sheet), 0); }
+}
+@keyframes verde-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+[data-theme='verde'] [data-state='closing'] .verde-sheet {
+  animation: verde-sheet-out var(--motion-normal) var(--motion-ease-accelerate) both;
+}
+[data-theme='verde'] [data-state='closing'] .verde-fade {
+  animation: verde-fade-out var(--motion-fast) var(--motion-ease-accelerate) both;
+}
+
+/* ── Cart line removal ──────────────────────────────────────────────── */
+@keyframes verde-line-out {
+  from { opacity: 1; transform: none; max-height: 140px; }
+  to { opacity: 0; transform: translate3d(-16px, 0, 0); max-height: 0; padding-block: 0; border-width: 0; }
+}
+[data-theme='verde'] [data-removing='true'] {
+  animation: verde-line-out var(--motion-normal) var(--motion-ease-accelerate) both;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Cart count confirmation ────────────────────────────────────────── */
+@keyframes verde-count-pop {
+  from { opacity: 0; scale: var(--count-in); }
+  62% { scale: var(--count-lift); }
+  to { opacity: 1; scale: 1; }
+}
+[data-theme='verde'] .cart-count {
+  animation: verde-count-pop var(--motion-slow) var(--motion-ease-emphasized) both;
+}

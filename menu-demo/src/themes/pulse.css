@@ -1,0 +1,419 @@
+/* ============================================================================
+   PULSE — Theme 05. Urban / Bold / Dynamic.
+   Near-black with an acid-lime accent, squared-off geometry, oversized
+   condensed display type, aggressive crops, and a category rail that snaps hard.
+   Motion is directional and fast: things enter from the side, scale hard, and
+   settle. Usability is preserved — every target stays thumb-sized.
+   ========================================================================== */
+
+[data-theme='pulse'] {
+  color-scheme: dark;
+
+  --bg: #08080a;
+  --surface: #101014;
+  --surface-2: #1a1a20;
+  --surface-glass: #101014;
+
+  --text: #f4f4f6;
+  --text-dim: #9c9ca6;
+  --text-mute: #6a6a74;
+  --on-accent: #08080a;
+
+  /* Acid lime against near-black: high energy without being a gamer palette. */
+  --accent: #d8ff3e;
+  --accent-soft: #e8ff7a;
+  --accent-deep: #a8cc22;
+  --accent-alt: #ff4d2e;
+
+  --line: rgb(244 244 246 / 0.12);
+  --line-strong: rgb(244 244 246 / 0.3);
+
+  --danger: #ff4d2e;
+
+  /* PULSE has no rounded corners. Geometry is square and hard. */
+  --radius: 0.25rem;
+  --radius-lg: 0.25rem;
+  --radius-pill: 0.25rem;
+
+  --shadow-lift: 0 0 0 1px rgb(244 244 246 / 0.1);
+
+  --font-body: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+
+  /* Fast and mechanical. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-transition: 260ms;
+
+  --grain-opacity: 0.18;
+  --hero-photo-opacity: 0.4;
+  --focus: #d8ff3e;
+
+  /* Kinetic: the whole ladder is compressed, and motion arrives sideways. */
+  --motion-instant: 70ms;
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-slow: 280ms;
+  --motion-sheet: 100%;
+  --motion-rise: 8px;
+  --motion-slide: 16px;
+  --count-in: 0.86;
+  --count-lift: 1.3;
+  --motion-press: 0.95;
+  --motion-ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-decelerate: cubic-bezier(0.12, 0.9, 0.2, 1);
+  --motion-ease-accelerate: cubic-bezier(0.5, 0, 1, 0.6);
+  --motion-ease-emphasized: cubic-bezier(0.16, 1.3, 0.3, 1);
+}
+
+/* ── Atmosphere: a hard diagonal light, plus scanline texture ─────────── */
+
+[data-theme='pulse'] .pulse-wash {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      115deg,
+      color-mix(in oklab, var(--accent) 9%, transparent) 0%,
+      transparent 34%
+    ),
+    radial-gradient(60% 40% at 88% 4%, color-mix(in oklab, var(--accent-alt) 12%, transparent), transparent 70%),
+    linear-gradient(180deg, #0d0d10 0%, #08080a 60%, #050506 100%);
+}
+
+/* Fine diagonal hatch — urban texture, not noise. */
+[data-theme='pulse'] .pulse-grain {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(255 255 255 / 0.5) 0 1px,
+    transparent 1px 5px
+  );
+  mix-blend-mode: overlay;
+}
+
+@keyframes pulse-slide-in {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(-1 * var(--motion-slide)), 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cards hit hard: scale overshoot then settle fast. */
+@keyframes pulse-slam {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-sheet), 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pulse-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The active category indicator wipes across rather than cross-fading. */
+@keyframes pulse-wipe {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pulse-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes pulse-throb {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ── Typographic signature ────────────────────────────────────────────── */
+
+/* Oversized, tightly tracked, uppercase. Latin labels only — Persian keeps
+   the body face so it stays readable at this weight. */
+[data-theme='pulse'] .pulse-display {
+  font-size: clamp(2.75rem, 13vw, 5.5rem);
+  line-height: 0.85;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+[data-theme='pulse'] .pulse-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* A hard-edged index numeral used to number categories and cards. */
+[data-theme='pulse'] .pulse-index {
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+}
+
+/* ── Surfaces: flat panels with hard borders ──────────────────────────── */
+
+[data-theme='pulse'] .pulse-glass {
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--line-strong);
+}
+
+[data-theme='pulse'] .pulse-bar {
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 2px solid var(--accent);
+}
+
+[data-theme='pulse'] .pulse-cta {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 6px 6px 0 0 color-mix(in oklab, var(--accent) 30%, transparent);
+  transition:
+    transform 0.12s var(--ease),
+    box-shadow 0.12s var(--ease);
+}
+
+/* The offset shadow collapses on press — a mechanical "click". */
+[data-theme='pulse'] .pulse-cta:active {
+  transform: translate3d(3px, 3px, 0);
+  box-shadow: 3px 3px 0 0 color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+/* A vertical accent bar that wipes in on hover. */
+[data-theme='pulse'] .pulse-edge {
+  position: relative;
+}
+
+[data-theme='pulse'] .pulse-edge::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.2s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-edge:hover::before,
+[data-theme='pulse'] .pulse-edge:focus-visible::before {
+  transform: scaleY(1);
+}
+
+/* ── Imagery: aggressive crops, higher contrast, slight push-in ───────── */
+
+[data-theme='pulse'] .pulse-photo {
+  filter: saturate(1.14) contrast(1.12) brightness(0.94);
+  transition:
+    transform 0.45s var(--ease),
+    filter 0.3s ease;
+}
+
+[data-theme='pulse'] .pulse-card:hover .pulse-photo {
+  transform: scale(1.05);
+  filter: saturate(1.2) contrast(1.14) brightness(1);
+}
+
+[data-theme='pulse'] .pulse-scrim {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--bg) 4%, transparent) 0%,
+    transparent 40%,
+    color-mix(in oklab, var(--bg) 88%, transparent) 100%
+  );
+}
+
+/* ── Motion surface ───────────────────────────────────────────────────── */
+
+[data-theme='pulse'] .pulse-slide {
+  animation: pulse-slide-in 0.34s var(--ease) both;
+}
+
+[data-theme='pulse'] .pulse-slam {
+  animation: pulse-slam 0.34s var(--ease) both;
+}
+
+[data-theme='pulse'] .pulse-fade {
+  animation: pulse-fade 0.18s ease both;
+}
+
+[data-theme='pulse'] .pulse-sheet {
+  animation: pulse-sheet-in 0.26s var(--ease) both;
+}
+
+[data-theme='pulse'] .pulse-wipe {
+  transform-origin: left;
+  animation: pulse-wipe 0.22s var(--ease) both;
+}@media (prefers-reduced-motion: no-preference) {
+
+  [data-theme='pulse'] .pulse-throb {
+    animation: pulse-throb 2s steps(2, end) infinite;
+  }
+}@media (prefers-reduced-motion: no-preference) {
+
+  /* A scrolling strip of the category names, used once as a decorative band. */
+  [data-theme='pulse'] .pulse-marquee {
+    display: flex;
+    width: max-content;
+    animation: pulse-marquee 22s linear infinite;
+  }
+}
+
+/* ── Interaction states ───────────────────────────────────────────────── */
+
+[data-theme='pulse'] .pulse-chip[data-selected='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+[data-theme='pulse'] .pulse-chip[data-selected='false'] {
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  transition:
+    background-color 0.12s var(--ease),
+    color 0.12s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-chip[data-selected='false']:hover {
+  color: var(--text);
+  background: color-mix(in oklab, var(--text) 6%, transparent);
+}
+
+[data-theme='pulse'] .pulse-add {
+  background: var(--accent);
+  color: var(--on-accent);
+  transition: transform 0.12s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-add:active {
+  transform: scale(0.9);
+}
+
+[data-theme='pulse'] .pulse-step {
+  transition: background-color 0.1s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-step:active {
+  background: color-mix(in oklab, var(--text) 14%, transparent);
+}
+
+[data-theme='pulse'] .pulse-remove {
+  color: var(--text-mute);
+  transition: color 0.12s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-remove:hover {
+  color: var(--accent-alt);
+}
+
+[data-theme='pulse'] .pulse-choice {
+  border: 1px solid var(--line);
+  background: color-mix(in oklab, var(--text) 4%, transparent);
+  color: var(--text-dim);
+  transition:
+    background-color 0.12s var(--ease),
+    color 0.12s var(--ease),
+    border-color 0.12s var(--ease);
+}
+
+[data-theme='pulse'] .pulse-choice[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+[data-theme='pulse'] .pulse-sold-out {
+  border: 1px solid var(--accent-alt);
+  color: var(--accent-alt);
+  background: color-mix(in oklab, var(--accent-alt) 12%, transparent);
+}
+
+/* ── Leave ─────────────────────────────────────────────────────────── */
+/* Straight out with the energy it arrived with — no lingering. */
+@keyframes pulse-sheet-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translate3d(0, var(--motion-sheet), 0); }
+}
+@keyframes pulse-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+[data-theme='pulse'] [data-state='closing'] .pulse-sheet {
+  animation: pulse-sheet-out var(--motion-fast) var(--motion-ease-accelerate) both;
+}
+[data-theme='pulse'] [data-state='closing'] .pulse-fade {
+  animation: pulse-fade-out calc(var(--motion-fast) * 0.7) var(--motion-ease-accelerate) both;
+}
+
+/* ── Cart line removal ──────────────────────────────────────────────── */
+/* Straight out, quickly, with the energy the theme arrives with. */
+@keyframes pulse-line-out {
+  from { opacity: 1; transform: none; max-height: 140px; }
+  to { opacity: 0; transform: translate3d(24px, 0, 0); max-height: 0; padding-block: 0; border-width: 0; }
+}
+[data-theme='pulse'] [data-removing='true'] {
+  animation: pulse-line-out var(--motion-fast) var(--motion-ease-accelerate) both;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Cart count confirmation ────────────────────────────────────────── */
+/* Comes in hot from above and snaps down — the fastest confirmation in the set. */
+@keyframes pulse-count-pop {
+  from { opacity: 0; scale: calc(1 + (1 - var(--count-in)) * 0.6); }
+  45% { scale: var(--count-in); }
+  to { opacity: 1; scale: 1; }
+}
+[data-theme='pulse'] .cart-count {
+  animation: pulse-count-pop var(--motion-normal) var(--motion-ease-emphasized) both;
+}
